@@ -8,5 +8,6 @@
     "scripts": ["popup.js"]
   },
   "permissions": ["activeTab"],
-  "devtools_page": "popup.html"
+  "devtools_page": "popup.html",
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }

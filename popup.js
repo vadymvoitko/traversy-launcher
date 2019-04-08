@@ -2,53 +2,47 @@ try {
   chrome.devtools.panels.create("Observable",
     "icon.png",
     "popup.html",
-    function (panel) {
-      
-    }
+    function (panel) {}
   );
 } catch (err) {
   console.log(err)
 }
 
-// chrome.runtime.onMessage.addListener(
-//   function (request, sender, sendResponse) {
-//     console.log(sender.tab ?
-//       "from a content script:" + sender.tab.url :
-//       "from the extension");
-//     if (request.greeting == "hello")
-//       sendResponse({
-//         farewell: "goodbye"
-//       });
-//   });
+const test = {
+    id: "5cab9ea485342b28eb563252",
+    name: {
+      first: "Dominique",
+      last: "Colon"
+    }
+  }
+function createTree(container, obj) {
+  container.appendChild(createTreeDom(obj));
+}
 
-chrome.tabs.query({
-  active: true,
-  currentWindow: true
-}, function (tabs) {
-  console.log('sfd');
-  chrome.tabs.sendMessage(tabs[0].id, {
-    greeting: "hello"
-  }, function (response) {
-    console.log(response);
-  });
-});
+function createTreeDom(obj) {
+  if (isObjectEmpty(obj)) {
+    var ul = document.createElement('ul');
+    var li = document.createElement('li');
+    li.innerHTML = obj;
+    ul.appendChild(li);
+    return ul
+  };
+  var ul = document.createElement('ul');
+  for (var key in obj) {
+    var li = document.createElement('li');
+    li.innerHTML = key;
+    var childrenUl = createTreeDom(obj[key]);
+    if (childrenUl) li.appendChild(childrenUl);
+    ul.appendChild(li);
+  }
+  return ul;
+}
 
-// chrome.runtime.onConnect.addListener(function (port) {
-//   console.log('aaaa')
-//   console.assert(port.name == "knockknock");
-//   port.onMessage.addListener(function (msg) {
-//     if (msg.joke == "Knock knock")
-//       port.postMessage({
-//         question: "Who's there?"
-//       });
-//     else if (msg.answer == "Madame")
-//       port.postMessage({
-//         question: "Madame who?"
-//       });
-//     else if (msg.answer == "Madame... Bovary")
-//       port.postMessage({
-//         question: "I don't get it."
-//       });
-//   });
-// });
+function isObjectEmpty(obj) {
+  console.log(typeof obj)
+  if ( typeof obj !== 'object' ) return true
+  return false;
+}
 
+var container = document.getElementById('container');
+createTree(container, test);
