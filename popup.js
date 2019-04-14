@@ -12,35 +12,47 @@ const test = {
     id: "5cab9ea485342b28eb563252",
     name: {
       first: "Dominique",
-      last: "Colon"
+      last: {
+        hui: ['Pizda', 'Rigat']
+      }
     }
   }
 function createTree(container, obj) {
   container.appendChild(createTreeDom(obj));
 }
 
-function createTreeDom(obj) {
+function createTreeDom(obj, flag) {
   if (isObjectEmpty(obj)) {
-    var ul = document.createElement('ul');
-    var li = document.createElement('li');
-    li.innerHTML = obj;
-    ul.appendChild(li);
-    return ul
+    var span = document.createElement('span');
+    span.innerHTML = Array.isArray(obj) ? `[ ${obj.join(', ')} ]` : obj;
+    span.style.paddingLeft = '15px';
+    span.style.color = 'blue';
+    return span
   };
   var ul = document.createElement('ul');
+  if (flag) ul.style.display = 'none';
   for (var key in obj) {
     var li = document.createElement('li');
     li.innerHTML = key;
-    var childrenUl = createTreeDom(obj[key]);
-    if (childrenUl) li.appendChild(childrenUl);
+    var childrenUl = createTreeDom(obj[key], true);
+    li.appendChild(childrenUl)
+    if (li.children[0].tagName !== 'SPAN')
+    {
+      li.addEventListener('click', (ev) => {
+        ev.stopPropagation()
+        var firstChild = ev.target.children[0]
+        if (firstChild.tagName === 'span') return;
+        firstChild.style.display = firstChild.style.display === 'none' ? '' : 'none'
+      })
+    }
+    if (childrenUl) 
     ul.appendChild(li);
   }
   return ul;
 }
 
 function isObjectEmpty(obj) {
-  console.log(typeof obj)
-  if ( typeof obj !== 'object' ) return true
+  if ( typeof obj !== 'object' || Array.isArray(obj)) return true
   return false;
 }
 
